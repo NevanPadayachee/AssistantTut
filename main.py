@@ -23,7 +23,7 @@ def getAudio():
             print(said)
         except Exception as e:
             print("Exception: "+str(e))
-    return said
+    return said.lower()
 
 def note(text):
     date = datetime.datetime.now()
@@ -31,25 +31,50 @@ def note(text):
     with open(filename, "w") as f:
         f.write(text)
     subprocess.Popen(["notepad.exe", filename])
+def confimation():
+    speak("Are you sure")
+    text = getAudio()
+    if "yes" in text :
+        return "yes"
+    elif "no" in text:
+        speak("Are you sure")
+        text = getAudio()
+        if "yes" in text:
 
-#note("nevan")
+            return "No"
+        else:
+            speak("let me ask again")
+            confimation()
+    else:
+        speak("sorry i did not get that, let me ask again")
+        confimation()
 
 print("start")
 text = getAudio()
+WAKE = ["hey jeff", "hi jess", "hello jeff", "jessica"]
 
-NOTE_STRS = ["make a note", "write this down", "remember this", "type this out"]
-for pharse in NOTE_STRS:
-    if pharse in text:
-        speak("What would you like me to write down")
-        note_text = getAudio().lower()
-        note(note_text)
-        speak("I have noted that")
-'''
+RUN = True
 
-
-
-if "hello" in text:
-    speak("hello, how are you?")
-
-if "what is your name" in text:
-    speak("Hi I'm jess, nice to meet you")'''
+while RUN:
+    print("start")
+    text = getAudio()
+    for phrase in WAKE:
+        if phrase in text:
+            speak("Good day, Sir")
+            text = getAudio()
+            NOTE_STRS = ["make a note", "write this down", "remember this", "type this out"]
+            for phrase in NOTE_STRS:
+                 if phrase in text:
+                    speak("What would you like me to write down")
+                    note_text = getAudio()
+                    speak(note_text)
+                    if confimation() == "yes":
+                        note(note_text)
+                        speak("I have noted that")
+                    else:
+                        speak("I have not saved the note")
+            SLEEP = ["bye jeff", "good night jeff", "jeff close", "leave jeff"]
+            for phrase in SLEEP:
+                if phrase in text:
+                    if confimation() == "yes":
+                        RUN = False
